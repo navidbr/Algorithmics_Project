@@ -117,7 +117,7 @@ class Genetic_Class:
             squared_average_score = np.empty([2*self.population_number], dtype=float)
             for i in range(2*self.population_number):
                 for j in range(self.reference_gene_number):
-                    scores[i,j] = LCS_function(self.population[i], self.reference_genes[j])
+                    scores[i,j] = LCS_function(str(self.population[i]), str(self.reference_genes[j]))
             for i in range(2*self.population_number):
                 squared_average_score[i] = self.squared_average(scores[i])
             scored_population = np.empty([2*self.population_number, 3], dtype=object)
