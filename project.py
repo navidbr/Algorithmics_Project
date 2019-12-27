@@ -4,14 +4,29 @@ import numpy as np
 
 
 
-def LCS_function(X, Y, m, n): # m and n are the lengths of strings X and Y respectively
-
-    if m == 0 or n == 0: 
-        return 0; 
-    elif X[m-1] == Y[n-1]:
-        return 1 + LCS_function(X, Y, m-1, n-1); 
-    else: 
-        return max(LCS_function(X, Y, m, n-1), LCS_function(X, Y, m-1, n)); # Returns the length of the longest common sequence
+def LCS_function(X, Y): # X and Y are the strings to compare
+      
+    m = len(X) 
+    n = len(Y) 
+  
+    L = [[0 for i in range(n+1)] for j in range(2)]  
+    bi = bool
+      
+    for i in range(m): 
+        bi = i&1
+  
+        for j in range(n+1): 
+            if (i == 0 or j == 0): 
+                L[bi][j] = 0
+  
+            elif (X[i] == Y[j - 1]): 
+                L[bi][j] = L[1 - bi][j - 1] + 1
+  
+            else: 
+                L[bi][j] = max(L[1 - bi][j],  
+                               L[bi][j - 1]) 
+  
+    return L[bi][n] #returns the length of longest common sequence
 
 
 
