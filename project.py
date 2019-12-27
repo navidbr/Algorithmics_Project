@@ -5,13 +5,14 @@ import numpy as np
 
 
 def LCS_function(X, Y, m, n): # m and n are the lengths of strings X and Y respectively
-  
+
     if m == 0 or n == 0: 
-       return 0; 
-    elif X[m-1] == Y[n-1]: 
-       return 1 + LCS_function(X, Y, m-1, n-1); 
+        return 0; 
+    elif X[m-1] == Y[n-1]:
+        return 1 + LCS_function(X, Y, m-1, n-1); 
     else: 
-       return max(LCS_function(X, Y, m, n-1), LCS_function(X, Y, m-1, n)); # Returns the length of the longest common sequence
+        return max(LCS_function(X, Y, m, n-1), LCS_function(X, Y, m-1, n)); # Returns the length of the longest common sequence
+
 
 
 
@@ -40,7 +41,7 @@ class Genetic_Class:
             self.population[i] = temp
         
         if type(reference_genes) == int:
-            self.reference_genes = np.empty([refrence_gene_number, gene_length], dtype=str)
+            self.reference_genes = np.empty([refrence_gene_number], dtype='<U'+str(gene_length))
             for i in range(refrence_gene_number):
                 temp = ''
                 for j in range(gene_length):
@@ -101,7 +102,7 @@ class Genetic_Class:
             squared_average_score = np.empty([2*self.population_number], dtype=float)
             for i in range(2*self.population_number):
                 for j in range(self.reference_gene_number):
-                    scores[i,j] = LCS_function(self.population[i], self.reference_genes[j])
+                    scores[i,j] = LCS_function(self.population[i], self.reference_genes[j], self.gene_length, self.gene_length)
             for i in range(2*self.population_number):
                 squared_average_score[i] = self.squared_average(scores[i])
             scored_population = np.empty([2*self.population_number, 3], dtype=object)
@@ -127,5 +128,5 @@ results2 = GC.next_generation(4)    # run 4 more generations and return the resu
 results3 = GC.next_generation('max')    # run remaining generations and return the result. (generation 12 to max generation)
 
 print(results3)
-
-
+        
+        
