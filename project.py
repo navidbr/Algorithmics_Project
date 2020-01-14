@@ -1,7 +1,37 @@
+import tkinter as tk
+import random
+import pandas as pd
+from time import strftime
 import numpy as np
+import matplotlib.pyplot as plt
+window = tk.Tk() # you may also see it named as "root" in other sources
 
+window.title("FLIGHT SCRAPER") # self explanatory!
+window.minsize(width=600,height=400)
+window.maxsize(width=600,height=600)
 
+window.resizable(width="false", height="false") # change to false if you want to prevent resizing
+frame_header = tk.Frame(window, borderwidth=2, pady=2)
+center_frame = tk.Frame(window, borderwidth=2, pady=5)
+bottom_frame = tk.Frame(window, borderwidth=2, pady=5)
+frame_header.grid(row=0, column=0)
+center_frame.grid(row=1, column=0)
+bottom_frame.grid(row=2, column=0)
 
+# label header to be placed in the frame_header
+header = tk.Label(frame_header, text = "SPECIES EVOLUTION", bg='green', fg='white', height='3', width='50', font=("Helvetica 16 bold"))
+# inside the grid of frame_header, place it in the position 0,0
+header.grid(row=0, column=0)
+# WIDGETS
+number1Label = tk.Label (center_frame,text="Enter Number of Generations")
+number1Label.pack()
+number1Box = tk.Entry(center_frame)
+number1Box.pack()
+
+number2Label = tk.Label (center_frame,text="Enter the Gene Length")
+number2Label.pack()
+number2Box = tk.Entry(center_frame)
+number2Box.pack()
 
 
 def LCS_function(X, Y): # X and Y are the strings to compare
@@ -41,11 +71,12 @@ class Genetic_Class:
         if population_number <10 or population_number>100:
             raise Exception('population_number is less than 10 or more than 100')
         
-        self.reference_gene_number = refrence_gene_number
-        self.population_number = population_number
+        self.reference_gene_number = 5
+        self.population_number = 100
         self.gene_length = gene_length
         self.max_generation = max_generation
         self.generation = 0
+        #print(self.population_number)
         
         char = ['A', 'C', 'G', 'T']
         self.population = np.empty([2* population_number], dtype='<U'+str(gene_length))
@@ -54,6 +85,7 @@ class Genetic_Class:
             for j in range(gene_length):
                 temp += np.random.choice(char)
             self.population[i] = temp
+        #print(self.population)
         
         if type(reference_genes) == int:
             self.reference_genes = np.empty([refrence_gene_number], dtype='<U'+str(gene_length))
@@ -65,6 +97,7 @@ class Genetic_Class:
         else:
             self.reference_genes = reference_genes
         del char
+        #print(self.population_number)
     
     
     
@@ -145,11 +178,51 @@ class Genetic_Class:
         
         return np.array((population_score/self.gene_length)*100, dtype=int)         # reurns the percentage of similarity of each gene to each reference gene.
 
-GC = Genetic_Class(refrence_gene_number=5, reference_genes=-1, population_number=100, gene_length=50, max_generation=50)   #Initialization of genetic algorithm
-results1 = GC.next_generation(6)     # run 7 generations and return the result after 7 generations
-# result is a matrix of size (population_number*refrence_gene_number), that contains the percentage of similarity of each gene of population to each reference gene.
-results2 = GC.next_generation(3)    # run 4 more generations and return the result after 4 more generations (returns the result of 7 + 4 = 11th generation)
 
-results3 = GC.next_generation('max')    # run remaining generations and return the result. (generation 12 to max generation)
 
-print(results3)
+
+
+
+
+
+
+
+
+
+def addNo():
+    a = int(number1Box.get())
+    b = int(number2Box.get())
+    GC = Genetic_Class(refrence_gene_number=5, reference_genes=-1, population_number=100, gene_length=a, max_generation=50)   #Initialization of genetic algorithm
+    #results1 = GC.next_generation(6)     # run 7 generations and return the result after 7 generations
+    # result is a matrix of size (population_number*refrence_gene_number), that contains the percentage of similarity of each gene of population to each reference gene.
+    #results2 = GC.next_generation(3)    # run 4 more generations and return the result after 4 more generations (returns the result of 7 + 4 = 11th generation)
+    
+    results3 = GC.next_generation(a)    # run remaining generations and return the result. (generation 12 to max generation)
+    
+    count = [0,0,0,0,0]
+    
+    for i in range(results3.shape[0]):
+        
+        res = results3[i]
+        largest = max(res)
+        indices = [idx for idx, val in enumerate(res) if val == largest]
+        bucket = random.choice(indices)
+            
+            
+        count[bucket] = count[bucket] + 1
+            #print(bucket)
+    #print(results3[1][2])
+    #print(count)
+    fig = plt.figure()
+    ax = fig.add_axes([0,0,1,1])
+    references = ["Swimming","Gliding","Flying","Jumping","Running"]
+    
+    ax.bar(references,count)
+    plt.show()    
+
+    
+but = tk.Button(bottom_frame,text="Generate Data", command=addNo)
+but.pack()
+
+window.mainloop()
+
