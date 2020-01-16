@@ -4,6 +4,12 @@ import pandas as pd
 from time import strftime
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+from pandas import DataFrame
+from matplotlib.backend_bases import key_press_handler
+from matplotlib.figure import Figure
+
+
 window = tk.Tk() # you may also see it named as "root" in other sources
 
 window.title("FLIGHT SCRAPER") # self explanatory!
@@ -220,9 +226,73 @@ def addNo():
     ax.bar(references,count)
     plt.show()    
 
+def addNo_():
+    a = int(number1Box.get())
+    b = int(number2Box.get())
+    GC = Genetic_Class(refrence_gene_number=5, reference_genes=-1, population_number=100, gene_length=b, max_generation=50)   #Initialization of genetic algorithm
+    results3 = GC.next_generation(a)
+    count = [0,0,0,0,0]
+    
+    
+    root = tk.Tk()
+    root.wm_title("Distributing of Genes")
+    root.minsize(width=300,height=300)
+    root.resizable(width="false", height="false")
+    for i in range(results3.shape[0]):
+        
+        res = results3[i]
+        largest = max(res)
+        indices = [idx for idx, val in enumerate(res) if val == largest]
+        bucket = random.choice(indices)
+        count[bucket] = count[bucket] + 1
+            #print(bucket)
+    #print(results3[1][2])
+    #print(count)
+    
+        """fig  = Figure(figsize=(4,5), dpi=100)
+        ax = fig.add_subplot(111)
+        references = ["Swimming","Gliding","Flying","Jumping","Running"]
+        ax.bar(references,count)
+        
+        
+        
+        canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)"""
+        
+
+        
+    """root = tk.Tk()
+    root.wm_title("Final Distributing of Genes")
+    i = 0
+    for i in range(results3.shape[0]):
+        res = results3[i]
+        largest = max(res)
+        indices = [idx for idx, val in enumerate(res) if val == largest]
+        bucket = random.choice(indices)
+        count[bucket] = count[bucket] + 1"""
+    
+    fig  = Figure(figsize=(5, 5), dpi=100)
+    ax = fig.add_subplot(111)
+    references = ["Swimming","Gliding","Flying","Jumping","Running"]
+    ax.bar(references,count,color = 'red')
+    
+    
+    
+    canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    
+    toolbar = NavigationToolbar2Tk(canvas, root)
+    toolbar.update()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
     
 but = tk.Button(bottom_frame,text="Generate Data", command=addNo)
 but.pack()
+
+but1 = tk.Button(bottom_frame,text = "Show Graph", command = addNo_)
+but1.pack()
 
 window.mainloop()
 
